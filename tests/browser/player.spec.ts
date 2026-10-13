@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Route } from '@playwright/test';
 test('selecting a local video keeps the page and selected file intact', async ({ page }) => {
   let navigations = 0;
   page.on('framenavigated', (frame) => {
@@ -56,8 +56,15 @@ test('video extraction runs locally and supports cancellation', async ({ page })
     .getByLabel('Reference video', { exact: true })
     .setInputFiles('playground/public/assets/squat.webm');
   await expect(page.getByRole('button', { name: 'Extract motion' })).toBeEnabled();
+  let blockedWorker: Route | undefined;
+  await page.route('**/assets/worker.js', (route) => {
+    blockedWorker = route;
+  });
   await page.getByRole('button', { name: 'Extract motion' }).click();
+  await expect.poll(() => Boolean(blockedWorker)).toBe(true);
   await page.getByRole('button', { name: 'Cancel extraction' }).click();
+  await blockedWorker!.abort().catch(() => {});
+  await page.unroute('**/assets/worker.js');
   await expect(page.getByText('Import cancelled', { exact: true })).toBeVisible();
   await page.getByLabel('Start (seconds)').fill('3');
   await page.getByLabel('End (seconds)').fill('4');
