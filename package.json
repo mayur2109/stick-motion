@@ -39,7 +39,7 @@
     "./video/worker.js": "./dist/video/worker.js"
   },
   "bin": {
-    "stick-motion": "./dist/export/cli.js"
+    "stick-motion": "dist/export/cli.js"
   },
   "engines": {
     "node": ">=22"

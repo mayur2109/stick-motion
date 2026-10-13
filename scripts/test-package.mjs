@@ -73,6 +73,12 @@ assert.match(renderToString(createElement(MotionPlayer,{clip})),/Timeline/);
 console.log('Clean core and React imports passed');`,
   );
   console.log(run('node', ['verify.mjs'], dir).trim());
+  run(
+    join(dir, 'node_modules/.bin/stick-motion'),
+    ['generate', 'plank', '--output', join(dir, 'plank.json')],
+    dir,
+  );
+  run(join(dir, 'node_modules/.bin/stick-motion'), ['validate', join(dir, 'plank.json')], dir);
   const directive = await readFile(
     join(dir, 'node_modules/stick-motion/dist/react/index.js'),
     'utf8',
