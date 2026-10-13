@@ -12,9 +12,9 @@
 
 ## Release/integration gates
 
-- Workout unit/type/build verification passed (35 tests at time of check); the isolated authenticated motion/offline checks passed in Chromium and WebKit. The full workout regression run was disrupted by concurrent builds/tests and changing app files and is not certified green.
-- npm publication and registry installation await account authentication; signup/login currently reports an access restriction. No release tag has been pushed. The public source repository is available.
-- Subsequent releases require an npm trusted publisher for `mayur2109/stick-motion`, workflow `publish.yml`.
+- Workout unit/type/build verification passed (35 tests at time of check); the isolated authenticated motion/offline checks passed in Chromium and WebKit. After the concurrent app changes finished, a fresh full workout suite passed all 14 tests in both browsers.
+- `stick-motion@0.1.0` is published publicly. A fresh anonymous registry install matches the verified tarball and passes vanilla JavaScript, React SSR, TypeScript, installed CLI, and dependency-isolation checks.
+- npm trusted publishing is configured for `mayur2109/stick-motion`, workflow `publish.yml`; the CLI verified the saved relationship. Subsequent `v*` release tags use OIDC, without stored npm publishing tokens. The initial release was published interactively after account/passkey verification.
 
 The first GitHub Actions run passed core/package/inference checks but found a cancellation-test race: unsupported WebKit could finish before the Cancel button was clicked. The test now holds the worker request during cancellation, then releases it before real extraction.
 

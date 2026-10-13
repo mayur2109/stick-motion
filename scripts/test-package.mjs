@@ -18,7 +18,20 @@ try {
     join(dir, 'package.json'),
     JSON.stringify({ name: 'clean-consumer', private: true, type: 'module' }),
   );
-  run('npm', ['install', '--ignore-scripts', join(dir, packed.filename)], dir);
+  const registryTest = process.env.STICK_MOTION_REGISTRY_TEST === '1';
+  const installSpec = registryTest ? 'stick-motion@0.1.0' : join(dir, packed.filename);
+  if (registryTest) {
+    const integrity = JSON.parse(
+      run(
+        'npm',
+        ['view', installSpec, 'dist.integrity', '--json', '--userconfig', '/dev/null'],
+        dir,
+      ),
+    );
+    if (integrity !== packed.integrity)
+      throw new Error('Registry tarball differs from the verified package');
+  }
+  run('npm', ['install', '--ignore-scripts', '--userconfig', '/dev/null', installSpec], dir);
   const vanilla = JSON.parse(run('npm', ['ls', '--json'], dir));
   if (vanilla.dependencies?.react || vanilla.dependencies?.sharp)
     throw new Error('Vanilla consumer acquired optional peers');
