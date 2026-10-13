@@ -1,0 +1,9 @@
+node_modules/
+dist/
+playground/dist/
+playground/public/assets/
+test-results/
+playwright-report/
+*.tgz
+.cache/
+.env*
